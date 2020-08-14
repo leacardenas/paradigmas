@@ -99,6 +99,7 @@ public class Practica1Paradigmas {
                     System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
                     break;
                 default:
+                    System.out.print("Error: you have typed an invalid command\n");
                     break;
             }
         }
