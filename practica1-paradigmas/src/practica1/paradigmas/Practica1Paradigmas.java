@@ -5,6 +5,15 @@
 */
 package practica1.paradigmas;
 
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,20 +25,45 @@ import java.util.Scanner;
  */
 public class Practica1Paradigmas {
     public static Integer count = 0;
+    public VentanaSimple vista = null;
+    public Boolean running = Boolean.FALSE;
+    List<figure> figures = new ArrayList<>();
+    
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        empezarApp();
+        new Practica1Paradigmas().empezarApp();
     }
     
+    public static class CircleDraw extends Frame {
+        Shape circle = new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f);
+        
+        public void paint(Graphics g) {
+            Graphics2D ga = (Graphics2D)g;
+            ga.setColor(Color.red);
+            ga.draw(circle);
+            ga.fill(circle);
+        }
+    }
+    
+    //Shape circle = new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f); x, y, r, r
+    //Shape square = new Rectangle2D.Double(100, 100,100, 100); x, y, w, h
+    
     //System.out.print("");
-    public static void empezarApp(){
+    
+    /*
+    Circle: new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f); x, y, r (r,r)
+    Square: new Rectangle2D.Double(100, 100,100, 100); x, y, l (l,l)
+    Rectangle: new Rectangle2D.Double(100, 100,100, 100); x, y, w, h
+    Triangle:
+    Donut: new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f); x, y, r1 / new Ellipse2D.Float(100+25.0f, 100+25.0f, 100.0f, 100.0f); x, y, r2
+    */
+    public void empezarApp(){
         String op = "";
         Scanner in;
         System.out.print("Start!\n");
-        
-        List<figure> figures = new ArrayList<>();
         
         while(!op.equals("exit")){
             in = new Scanner(System.in);
@@ -74,14 +108,18 @@ public class Practica1Paradigmas {
                     break;
                 case "ellipse":
                     if(cantArg(stringarray.length -1, 4)){
-                        System.out.print("Coming soon");    
+                        System.out.print("Coming soon");
                     }else{
                         System.out.print("Error: Invalid quantity of arguments\n Try again\n");
                     }
                     break;
                 case "delete":
                     if(cantArg(stringarray.length -1, 1)){
-                        
+                        try {
+                            delete(Integer.valueOf(stringarray[1]));
+                        } catch (Exception e) {
+                            System.out.print("Error: Please use a valid number.\n");
+                        }
                     }else{
                         System.out.print("Error: Invalid quantity of arguments\n Try again\n");
                     }
@@ -98,6 +136,11 @@ public class Practica1Paradigmas {
                 case "help":
                     System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
                     break;
+                case "arcxhive":
+                    System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
+                    break;
+                case "exit":
+                    break;
                 default:
                     System.out.print("Error: you have typed an invalid command\n");
                     break;
@@ -111,19 +154,35 @@ public class Practica1Paradigmas {
         return Objects.equals(args, cant); //Demasiados argumentos
     }
     
-    //Objetos
-    public static class figure {
-        public static String type;
-        public static Integer id;
-        public Double x;
-        public Double y;
+    public void registrar(String linea) {
+        System.out.printf("\t%s%n", linea);
+        vista.registrarMensaje(linea);
         
-        public static void print(){
-            System.out.print(type + " " + id + "\n");
+    }
+    
+    public void delete(Integer id){
+        for(figure f : figures){
+            if(f.id.equals(id)){
+                figures.remove(f);
+                System.out.print("The figure has been deleted\n");
+                break;
+            }
         }
     }
     
-    public static class circle extends figure{
+    //Objetos
+    public class figure extends Frame {
+        public String type;
+        public Integer id;
+        public Double x;
+        public Double y;
+        
+        public void print(){
+            System.out.print("Figure # " + id + " - Type: " + type + " Coords: (" + x + "," + y + ")\n");
+        }
+    }
+    
+    public class circle extends figure{
         public Double radio;
         
         public circle(String type, Integer id, Double x, Double y, Double radio) {
@@ -136,7 +195,7 @@ public class Practica1Paradigmas {
         }
     }
     
-    public static class square extends figure{
+    public class square extends figure{
         public Double side;
         
         public square(String type, Integer id, Double x, Double y, Double side) {
@@ -149,7 +208,7 @@ public class Practica1Paradigmas {
         }
     }
     
-    public static class rectangle extends figure{
+    public class rectangle extends figure{
         public Double width;
         public Double height;
         
@@ -164,7 +223,7 @@ public class Practica1Paradigmas {
         }
     }
     
-    public static class triangle extends figure{
+    public class triangle extends figure{
         public Double x_2;
         public Double y_2;
         public Double x_3;
@@ -183,7 +242,7 @@ public class Practica1Paradigmas {
         }
     }
     
-    public static class donut extends figure{
+    public class donut extends figure{
         public Double radio_1;
         public Double radio_2;
         
