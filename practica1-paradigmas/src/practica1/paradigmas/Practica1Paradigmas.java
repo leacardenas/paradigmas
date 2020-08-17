@@ -6,6 +6,7 @@
 package practica1.paradigmas;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
-import javafx.stage.WindowEvent;
 
 /**
  *
@@ -43,33 +43,175 @@ public class Practica1Paradigmas {
     float[] or = Color.ORANGE.getColorComponents(null);
     Color orange = new Color(or[0], or[1], or[2], 0.35f); //donuts
     
+    private static final Font TIPO_BASE = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //new Practica1Paradigmas().empezarApp();
-        new Practica1Paradigmas().testing();
+        new Practica1Paradigmas().empezarApp();
+        //new Practica1Paradigmas().testing();
     }
     
     public void testing(){
         figures.add(new circle("Circle", 0, 200f, 200f, 50f));
         figures.add(new square("Square", 3, 300f, 300f, 30f));
         figures.add(new rectangle("Rectangle", 4, 400f, 400f, 50f, 40f));
-        figures.add(new donut("Donut", 5, 500f, 500f, 200f, 200f));
+        figures.add(new donut("Donut", 5, 500f, 500f, 200f, 150f));
         
         Frame frame = new printFigures();
-        frame.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent we){ System.exit(0); }
-        });
         
+        frame.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent we){
+                frame.dispose();
+            }
+        });
         frame.setSize(1000, 1000);
         frame.setVisible(true);
+    }
+    
+    //Shape circle = new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f); x, y, r, r
+    //Shape square = new Rectangle2D.Float(100, 100,100, 100); x, y, w, h
+    
+    //System.out.print("");
+    
+    /*
+    Circle: new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f); x, y, r (r,r)
+    Square: new Rectangle2D.Float(100, 100,100, 100); x, y, l (l,l)
+    Rectangle: new Rectangle2D.Float(100, 100,100, 100); x, y, w, h
+    Triangle:
+    Donut: new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f); x, y, r1 / new Ellipse2D.Float(100+25.0f, 100+25.0f, 100.0f, 100.0f); x, y, r2
+    */
+    public void empezarApp(){
+        String op = "";
+        Scanner in;
+        System.out.print("Start!\n");
+        Boolean print;
+        Frame frame = new printFigures();
+        
+        frame.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent we){
+                frame.dispose();
+            }
+        });
+        
+        while(!op.equals("exit")){
+            in = new Scanner(System.in);
+            op = in.nextLine();
+            String[] stringarray = op.split("\\s+");
+            print = true;
+            
+            switch(stringarray[0]){
+                case "circle":
+                    if(cantArg(stringarray.length -1, 3)){
+                        figures.add(new circle("Circle",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3])));
+                    }else{
+                        System.out.print("Error: Invalid quantity of arguments");
+                        print = false;
+                    }
+                    break;
+                case "square":
+                    if(cantArg(stringarray.length -1, 3)){
+                        figures.add(new square("Square",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3])));
+                    }else{
+                        System.out.print("Error: Invalid quantity of arguments");
+                        print = false;
+                    }
+                    break;
+                case "rectangle":
+                    if(cantArg(stringarray.length -1, 4)){
+                        figures.add(new rectangle("Rectangle",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3]), Float.valueOf(stringarray[4])));
+                    }else{
+                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
+                        print = false;
+                    }
+                    break;
+                case "triangle":
+                    if(cantArg(stringarray.length -1, 6)){
+                        figures.add(new triangle("Triangle",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3]), Float.valueOf(stringarray[4]), Float.valueOf(stringarray[5]), Float.valueOf(stringarray[6])));
+                    }else{
+                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
+                        print = false;
+                    }
+                    break;
+                case "donut":
+                    if(cantArg(stringarray.length -1, 4)){
+                        figures.add(new donut("Donut",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3]), Float.valueOf(stringarray[4])));
+                    }else{
+                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
+                        print = false;
+                    }
+                    break;
+                case "ellipse":
+                    if(cantArg(stringarray.length -1, 4)){
+                        System.out.print("Coming soon");
+                        print = false;
+                    }else{
+                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
+                        print = false;
+                    }
+                    break;
+                case "delete":
+                    print = false;
+                    if(cantArg(stringarray.length -1, 1)){
+                        try {
+                            delete(Integer.valueOf(stringarray[1]));
+                        } catch (Exception e) {
+                            System.out.print("Error: Please use a valid number.\n");
+                        }
+                    }else{
+                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
+                    }
+                    break;
+                case "list":
+                    print = false;
+                    if(figures.size() > 0){
+                        for(figure f : figures){
+                            f.print();
+                        }
+                    }else{
+                        System.out.print("There are no figures on the system\n");
+                    }
+                    break;
+                case "help":
+                    print = false;
+                    
+                    System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
+                    break;
+                case "archive":
+                    print = false;
+                    
+                    System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
+                    break;
+                case "exit":
+                    print = false;
+                    
+                    break;
+                default:
+                    print = false;
+                    
+                    System.out.print("Error: you have typed an invalid command\n");
+                    break;
+            }
+            
+            if(print){
+                frame.setSize(1000, 1000);
+                frame.setVisible(true);
+            }
+        }
+        
+        System.out.print("Bye bye :)\n");
     }
     
     public class printFigures extends Frame {
         public void paint(Graphics g){
             for(figure f : figures){
                 Graphics2D ga = (Graphics2D)g;
+                Font tipo = TIPO_BASE.deriveFont(15f);
+                ga.setFont(tipo);
+                
                 switch(f.type){
                     case "Circle":
                         circle c = (circle) f;
@@ -77,6 +219,12 @@ public class Practica1Paradigmas {
                         ga.setColor(blue);
                         ga.draw(circle);
                         ga.fill(circle);
+                        
+                        ga.setColor(ga.getColor().darker());
+                        ga.drawString("Figure: " + f.id + " Coords: " + f.x + "," + f.y,
+                                (int) ((f.x + 6)),
+                                (int) ((f.y + 4))
+                        );
                         
                         break;
                     case "Square":
@@ -86,6 +234,12 @@ public class Practica1Paradigmas {
                         ga.draw(square);
                         ga.fill(square);
                         
+                        ga.setColor(ga.getColor().darker());
+                        ga.drawString("Figure: " + f.id + " Coords: " + f.x + "," + f.y,
+                                (int) ((f.x + 6)),
+                                (int) ((f.y + 4))
+                        );
+                        
                         break;
                     case "Rectangle":
                         rectangle r = (rectangle) f;
@@ -93,6 +247,12 @@ public class Practica1Paradigmas {
                         ga.setColor(purple);
                         ga.draw(rectangle);
                         ga.fill(rectangle);
+                        
+                        ga.setColor(ga.getColor().darker());
+                        ga.drawString("Figure: " + f.id + " Coords: " + f.x + "," + f.y,
+                                (int) ((f.x + 6)),
+                                (int) ((f.y + 4))
+                        );
                         
                         break;
                     case "Triangle":
@@ -114,112 +274,16 @@ public class Practica1Paradigmas {
                         ga.setColor(Color.white);
                         ga.draw(donut_2);
                         ga.fill(donut_2);
+                        
+                        ga.setColor(ga.getColor().darker());
+                        ga.drawString("Figure: " + f.id + " Coords: " + f.x + "," + f.y,
+                                (int) ((f.x + 6)),
+                                (int) ((f.y + 4))
+                        );
                         break;
                 }
             }
         }
-    }
-    
-    //Shape circle = new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f); x, y, r, r
-    //Shape square = new Rectangle2D.Float(100, 100,100, 100); x, y, w, h
-    
-    //System.out.print("");
-    
-    /*
-    Circle: new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f); x, y, r (r,r)
-    Square: new Rectangle2D.Float(100, 100,100, 100); x, y, l (l,l)
-    Rectangle: new Rectangle2D.Float(100, 100,100, 100); x, y, w, h
-    Triangle:
-    Donut: new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f); x, y, r1 / new Ellipse2D.Float(100+25.0f, 100+25.0f, 100.0f, 100.0f); x, y, r2
-    */
-    public void empezarApp(){
-        String op = "";
-        Scanner in;
-        System.out.print("Start!\n");
-        
-        while(!op.equals("exit")){
-            in = new Scanner(System.in);
-            op = in.nextLine();
-            String[] stringarray = op.split("\\s+");
-            
-            switch(stringarray[0]){
-                case "circle":
-                    if(cantArg(stringarray.length -1, 3)){
-                        figures.add(new circle("Circle",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3])));
-                    }else{
-                        System.out.print("Error: Invalid quantity of arguments");
-                    }
-                    break;
-                case "square":
-                    if(cantArg(stringarray.length -1, 3)){
-                        figures.add(new square("Square",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3])));
-                    }else{
-                        System.out.print("Error: Invalid quantity of arguments");
-                    }
-                    break;
-                case "rectangle":
-                    if(cantArg(stringarray.length -1, 4)){
-                        figures.add(new rectangle("Rectangle",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3]), Float.valueOf(stringarray[4])));
-                    }else{
-                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
-                    }
-                    break;
-                case "triangle":
-                    if(cantArg(stringarray.length -1, 6)){
-                        figures.add(new triangle("Triangle",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3]), Float.valueOf(stringarray[4]), Float.valueOf(stringarray[5]), Float.valueOf(stringarray[6])));
-                    }else{
-                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
-                    }
-                    break;
-                case "donut":
-                    if(cantArg(stringarray.length -1, 4)){
-                        figures.add(new donut("Donut",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3]), Float.valueOf(stringarray[4])));
-                    }else{
-                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
-                    }
-                    break;
-                case "ellipse":
-                    if(cantArg(stringarray.length -1, 4)){
-                        System.out.print("Coming soon");
-                    }else{
-                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
-                    }
-                    break;
-                case "delete":
-                    if(cantArg(stringarray.length -1, 1)){
-                        try {
-                            delete(Integer.valueOf(stringarray[1]));
-                        } catch (Exception e) {
-                            System.out.print("Error: Please use a valid number.\n");
-                        }
-                    }else{
-                        System.out.print("Error: Invalid quantity of arguments\n Try again\n");
-                    }
-                    break;
-                case "list":
-                    if(figures.size() > 0){
-                        for(figure f : figures){
-                            f.print();
-                        }
-                    }else{
-                        System.out.print("There are no figures on the system\n");
-                    }
-                    break;
-                case "help":
-                    System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
-                    break;
-                case "arcxhive":
-                    System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
-                    break;
-                case "exit":
-                    break;
-                default:
-                    System.out.print("Error: you have typed an invalid command\n");
-                    break;
-            }
-        }
-        
-        System.out.print("Bye bye :)\n");
     }
     
     public static Boolean cantArg(Integer args, Integer cant){
@@ -238,6 +302,7 @@ public class Practica1Paradigmas {
     
     //Objetos
     public class figure extends Frame {
+        
         public String type;
         public Integer id;
         public Float x;
