@@ -178,7 +178,7 @@ public class Practica1Paradigmas {
                 case "help":
                     print = false;
                     
-                    System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
+                    System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\narchive\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
                     break;
                 case "archive":
                     print = false;
