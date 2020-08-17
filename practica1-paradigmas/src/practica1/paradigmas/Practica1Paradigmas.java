@@ -14,6 +14,7 @@ import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -58,6 +59,7 @@ public class Practica1Paradigmas {
         figures.add(new square("Square", 3, 300f, 300f, 30f));
         figures.add(new rectangle("Rectangle", 4, 400f, 400f, 50f, 40f));
         figures.add(new donut("Donut", 5, 500f, 500f, 200f, 150f));
+        figures.add(new triangle("Triangle", 6, 100f, 50f, 70f, 100f, 130f, 100f));
         
         Frame frame = new printFigures();
         
@@ -181,9 +183,14 @@ public class Practica1Paradigmas {
                     System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\narchive\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
                     break;
                 case "archive":
-                    print = false;
+                    print = true;
+                    if(cantArg(stringarray.length -1, 1)){
+                        processArchive(stringarray[1]);
+                    }else{
+                        System.out.print("Error: Invalid quantity of arguments");
+                        print = false;
+                    }
                     
-                    System.out.print("Valid options:\n\ncircle(3)\nsquare(3)\ntriangle(6)\ndonut(4)\nellipse(4)\ndelete\nhelp\nexit\n\nThe number on the parentesis, is the amount of arguments to be written.\n\n");
                     break;
                 case "exit":
                     print = false;
@@ -257,10 +264,22 @@ public class Practica1Paradigmas {
                         break;
                     case "Triangle":
                         triangle t = (triangle) f;
-                        //Rach
-//                    ga.setColor(green);
-//                    ga.draw(t);
-//                    ga.fill(t);
+                        int x1 = Math.round(t.x);
+                        int y1 = Math.round(t.y);
+                        int x2 = Math.round(t.x_2);
+                        int y2 = Math.round(t.y_2);
+                        int x3 = Math.round(t.x_3);
+                        int y3 = Math.round(t.y_4);
+                        
+                        ga.setColor(Color.red);
+                        
+                        ga.drawPolygon(new int[] {x1, x2, x3}, new int[] {y1, y2, y3}, 3);
+                        
+                        ga.drawString("Figure: " + f.id + " Coords: " + f.x + "," + f.y,
+                                (int) ((f.x + 6)),
+                                (int) ((f.y + 4))
+                        );
+                        
                         
                         break;
                     case "Donut":
@@ -289,6 +308,54 @@ public class Practica1Paradigmas {
     public static Boolean cantArg(Integer args, Integer cant){
         return Objects.equals(args, cant); //Demasiados argumentos
     }
+    
+    public static ArrayList<String> readArchive(String path){
+            ArrayList<String> command = new ArrayList();
+            
+                    try {
+                        Scanner input = new Scanner(new File(path));
+                        while (input.hasNextLine()) {
+                            String line = input.nextLine();
+                            command.add(line);
+                        }
+                        input.close();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+            return command;
+        }
+    
+    public void processArchive(String path){
+            ArrayList<String> commands = this.readArchive(path);
+            
+            for(String c:commands){
+                 String[] stringarray = c.split("\\s+");
+                 
+                switch(stringarray[0]){
+                case "circle":
+                    figures.add(new circle("Circle",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3])));
+                    break;
+                case "square":
+                    figures.add(new square("Square",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3])));
+                    break;
+                case "rectangle":
+                    figures.add(new rectangle("Rectangle",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3]), Float.valueOf(stringarray[4])));
+                    break;
+                case "triangle":
+                    figures.add(new triangle("Triangle",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3]), Float.valueOf(stringarray[4]), Float.valueOf(stringarray[5]), Float.valueOf(stringarray[6])));
+                    break;
+                case "donut":
+                    figures.add(new donut("Donut",count,Float.valueOf(stringarray[1]), Float.valueOf(stringarray[2]), Float.valueOf(stringarray[3]), Float.valueOf(stringarray[4])));
+                    break;
+                case "ellipse":
+                    System.out.print("Coming soon");
+                    break;
+                default:
+                    System.out.print("Error: you have typed an invalid command\n");
+                    break;
+                }
+            }
+        }
     
     public void delete(Integer id){
         for(figure f : figures){
